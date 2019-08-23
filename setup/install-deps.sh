@@ -10,6 +10,7 @@ if [[ $(hostname -f | grep summit) == "" ]]; then echo "Pipeline fail: Must run 
 # Exit immediately if program executes with non-zero error status
 set -e
 
+source ./env.sh
 
 # Load modules available on summit. 8/14/2019
 modules=( hsi/5.0.2.p5

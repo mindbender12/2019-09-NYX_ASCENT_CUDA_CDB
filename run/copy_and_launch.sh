@@ -1,5 +1,8 @@
 #!/bin/bash
-cp run/8core_nyx_ascent.sh ${MEMBERWORK}/csc340/opt/nyx/src/Exec/LyA/
-pushd ${MEMBERWORK}/csc340/opt/nyx/src/Exec/LyA/
+
+source ./env.sh
+
+cp run/8core_nyx_ascent.sh ${BASE_DIR}/opt/nyx/src/Exec/LyA/
+pushd ${BASE_DIR}/opt/nyx/src/Exec/LyA/
 bsub 8core_nyx_ascent.sh
 popd
