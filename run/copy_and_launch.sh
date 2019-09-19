@@ -2,7 +2,7 @@
 
 source ./env.sh
 
-cp run/8core_nyx_ascent.sh ${BASE_DIR}/opt/nyx/src/Exec/LyA/
-pushd ${BASE_DIR}/opt/nyx/src/Exec/LyA/
+cat run/8core_nyx_ascent.sh | sed "s#<basepath>#${BASE_PATH}#" > ${BASE_PATH}/opt/nyx/src/Exec/LyA/8core_nyx_ascent.sh
+pushd ${BASE_PATH}/opt/nyx/src/Exec/LyA/
 bsub 8core_nyx_ascent.sh
 popd

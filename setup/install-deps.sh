@@ -38,6 +38,11 @@ BASE_PATH="${BASE_PATH:-$PWD}"
 # Prepare your environment for Conduit, Ascent, Nyx builds.
 # Conduit is standalone. Ascent is dependency of Nyx.
 OPT_PATH=${BASE_PATH}/opt
+
+# Need to sort out how to check for previous installations
+# just delete and recreate it for now.
+rm -rf ${OPT_PATH}
+
 mkdir -p ${OPT_PATH}
 export LDFLAGS='-pthread -lpthread'
 
