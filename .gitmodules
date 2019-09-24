@@ -1,0 +1,6 @@
+[submodule "submodules/cinema_workflows"]
+	path = submodules/cinema_workflows
+	url = git@github.com:cinemascience/cinema_workflows.git
+[submodule "submodules/cinema_lib"]
+	path = submodules/cinema_lib
+	url = https://github.com/cinemascience/cinema_lib

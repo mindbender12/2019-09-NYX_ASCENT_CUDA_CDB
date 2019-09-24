@@ -321,4 +321,13 @@ echo "[
   }
 ]" > ascent_actions.json
 echo Nyx Ascent JSON input dump: DONE
+popd
+
+### BEGIN ANALYSIS DEPENDENCIES
+echo Cinema installation: BEGIN
+module load python/3.6.6-anaconda3-5.3.0
+pushd submodules/cinema_lib
+pip install --user .
+popd
+echo Cinema installation: SUCCESS
 

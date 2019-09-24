@@ -14,8 +14,14 @@ action "execute" {
   args = "./sbang.sh run/copy_and_launch.sh"
 }
 
-action "validate" {
+action "check job completion" {
   needs = "execute"
   uses = "sh"
-  args = "./sbang.sh validate/check_one_output_file.sh"
+  args = "./sbang.sh run/wait_for_completion.sh"
+}
+
+action "validate" {
+  needs = "check job completion"
+  uses = "sh"
+  args = "./sbang.sh validate/build_and_export_cinema_viewer.sh"
 }
