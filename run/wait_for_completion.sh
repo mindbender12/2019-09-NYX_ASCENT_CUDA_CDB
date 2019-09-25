@@ -1,7 +1,7 @@
 #!/bin/bash
 
 time=-$(date +%s); 
-while [ ! "$(bjobs 2>&1 | grep 'No unfinished')" ]; do 
+while [ "$(bjobs 2>&1 | grep 'nyx_in_situ')" ]; do 
   clear; 
   echo ===========================================; 
   echo ">>>  Job running ($(( $(date +%s) + ${time} )) seconds elapsed)";
