@@ -19,10 +19,11 @@ modules=( hsi/5.0.2.p5
           gcc/5.4.0
           xalt/1.1.3
           darshan-runtime/3.1.7
-          cmake/3.9.2 
-          #cmake/3.14.2 
-          spectrum-mpi/10.3.0.0-20190419
-          python/2.7.15-anaconda2-5.3.0
+          cmake/3.9.2
+          cuda/10.1.105
+          hdf5/1.10.3 
+          gcc/5.4.0
+          spectrum-mpi
         )
 for module in ${modules[@]}; do
   echo Loading module $module: BEGIN;
@@ -47,12 +48,17 @@ mkdir -p ${OPT_PATH}
 export LDFLAGS='-pthread -lpthread'
 
 echo Conduit env setup: BEGIN
-git clone --recursive --branch v0.3.1  https://github.com/LLNL/conduit.git ${OPT_PATH}/conduit/src
+git clone --recursive https://github.com/LLNL/conduit.git ${OPT_PATH}/conduit/src
 # conduit paths
 CONDUIT_BUILD=${OPT_PATH}/conduit/src/build
 mkdir -p ${CONDUIT_BUILD}
-CONDUIT_INSTALL=${OPT_PATH}/conduit/0.3.1
+CONDUIT_INSTALL=${OPT_PATH}/conduit/0c30223
 mkdir -p ${CONDUIT_INSTALL}
+pushd ${OPT_PATH}/conduit/src/
+git checkout 0c30223cbf1ea06bc6f327a6a6a50966846350bb
+git submodule init
+git submodule update
+popd
 echo Conduit env setup: SUCCESS
 
 # Source clone
@@ -61,9 +67,9 @@ echo Conduit compile: BEGIN
 pushd ${CONDUIT_BUILD}
 #cmake -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DCMAKE_BUILD_TYPE=Release -DENABLE_MPI=ON -DENABLE_OPENMP=OFF ../src
 echo 'set(HDF5_DIR "/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/hdf5-1.10.3-lkiyvnhwujxwna67ldnlzslvoqgjavyr" CACHE PATH "")' > ../host-configs/summit.cmake
-cmake -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DCMAKE_BUILD_TYPE=Release -DENABLE_FORTRAN=ON ../src
+cmake -DBUILD_SHARED_LIBS=ON  -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DCMAKE_BUILD_TYPE=Release -DENABLE_FORTRAN=ON ../src
 # Fortran object needs to be built first, error in CMake logic prevents one line build
-cmake -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DCMAKE_BUILD_TYPE=Release -DENABLE_MPI=ON -DENABLE_OPENMP=OFF -DCMAKE_INSTALL_PREFIX=${CONDUIT_INSTALL} -DENABLE_PYTHON=ON -C ../host-configs/summit.cmake ../src
+cmake -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DCMAKE_BUILD_TYPE=Release -DENABLE_MPI=ON -DENABLE_OPENMP=OFF -DCMAKE_INSTALL_PREFIX=${CONDUIT_INSTALL} -DENABLE_PYTHON=OFF -C ../host-configs/summit.cmake ../src
 echo Conduit compile: SUCCESS
 echo Conduit install: BEGIN
 make install -j 1
@@ -165,7 +171,8 @@ mkdir -p ${VTKM_INSTALL}
 echo VTK-m env setup: SUCCESS
 echo VTK-m compile: BEGIN
 pushd ${VTKM_BUILD}
-cmake -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DCMAKE_BUILD_TYPE=Release -DVTKm_USE_64BIT_IDS=OFF -DVTKm_USE_DOUBLE_PRECISION=ON -DVTKm_ENABLE_OPENMP=OFF -DVTKm_ENABLE_MPI=OFF -DCMAKE_INSTALL_PREFIX=${VTKM_INSTALL} ../
+cmake -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DCMAKE_BUILD_TYPE=Release -DVTKm_USE_64BIT_IDS=OFF -DVTKm_USE_DOUBLE_PRECISION=ON -DVTKm_ENABLE_OPENMP=OFF -DVTKm_ENABLE_MPI=OFF -DVTKm_ENABLE_CUDA=ON -DCMAKE_INSTALL_PREFIX=${VTKM_INSTALL} ../
+cmake -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DCMAKE_BUILD_TYPE=Release -DVTKm_USE_64BIT_IDS=OFF -DVTKm_USE_DOUBLE_PRECISION=ON -DVTKm_ENABLE_OPENMP=OFF -DVTKm_ENABLE_MPI=OFF -DVTKm_ENABLE_CUDA=ON -DVTKm_CUDA_Architecture=volta -DVTKm_ENABLE_TESTING=OFF -DCMAKE_INSTALL_PREFIX=${VTKM_INSTALL} ../
 echo VTK-m compile: SUCCESS
 echo VTK-m install: BEGIN
 make install -j 50
@@ -175,19 +182,20 @@ echo VTK-m install: SUCCESS
 echo VTK-h env setup: BEGIN
 git clone --recursive https://github.com/Alpine-DAV/vtk-h.git ${OPT_PATH}/vtkh/src
 pushd ${OPT_PATH}/vtkh/src
-git checkout 21cbdfe
+git checkout  23d861a1266be00bbd1137a48aa820ed69a6cfd7
 git submodule init
 git submodule update
 popd
 # vtkh paths
 VTKH_BUILD=${OPT_PATH}/vtkh/src/build
 mkdir -p ${VTKH_BUILD}
-VTKH_INSTALL=${OPT_PATH}/vtkh/21cbdfe
+VTKH_INSTALL=${OPT_PATH}/vtkh/23d861a
 mkdir -p ${VTKH_INSTALL}
 echo VTK-h env setup: SUCCESS
 echo VTK-h compile: BEGIN
 pushd ${VTKH_BUILD}
-cmake -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DVTKM_DIR=${VTKM_INSTALL}  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${VTKH_INSTALL} -DENABLE_OPENMP=ON -DENABLE_MPI=ON ../src
+cmake -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DVTKM_DIR=${VTKM_INSTALL}  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${VTKH_INSTALL} -DENABLE_OPENMP=OFF -DENABLE_CUDA=ON -DENABLE_MPI=ON ../src
+cmake -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DVTKM_DIR=${VTKM_INSTALL}  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${VTKH_INSTALL} -DENABLE_OPENMP=OFF -DVTKm_CUDA_Architecture=volta -DENABLE_MPI=ON ../src
 make install -j 50
 popd
 echo VTK-h compile: SUCCESS
@@ -195,26 +203,28 @@ echo VTK-h compile: SUCCESS
 echo Ascent env setup: BEGIN
 git clone --recursive https://github.com/Alpine-DAV/ascent.git ${OPT_PATH}/ascent/src
 pushd ${OPT_PATH}/ascent/src
-git checkout da7e1fa
+git checkout 0bb51d62d72bebf7d3d2c3a16933b86ac7d2364b
 git submodule init
 git submodule update
 popd
 # ascent paths
 ASCENT_BUILD=${OPT_PATH}/ascent/src/build
 mkdir -p ${ASCENT_BUILD}
-ASCENT_INSTALL=${OPT_PATH}/ascent/da7e1fa
+ASCENT_INSTALL=${OPT_PATH}/ascent/0bb51d6
 mkdir -p ${ASCENT_INSTALL}
 echo Ascent env setup: SUCCESS
 echo Ascent compile: BEGIN
 pushd ${ASCENT_BUILD}
 echo "set(BUILD_SHARED_LIBS ON CACHE BOOL \"\")    
 set(CMAKE_C_COMPILER \"/sw/summit/gcc/5.4.0/bin/gcc\" CACHE PATH \"\")
-set(ENABLE_OPENMP ON CACHE BOOL \"\")
+set(ENABLE_OPENMP OFF CACHE BOOL \"\")
+set(ENABLE_CUDA ON CACHE BOOL \"\")
 set(ENABLE_MPI  ON CACHE BOOL \"\")
 set(CONDUIT_DIR \"${CONDUIT_INSTALL}\" CACHE PATH \"\")
 set(VTKM_DIR \"${VTKM_INSTALL}\" CACHE PATH \"\")
+set(HDF5_DIR \"/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/hdf5-1.10.3-lkiyvnhwujxwna67ldnlzslvoqgjavyr\"  CACHE PATH \"\")
 set(VTKH_DIR \"${VTKH_INSTALL}\" CACHE PATH \"\")" > ../host-configs/summit.cmake
-cmake -C ../host-configs/summit.cmake -DCMAKE_INSTALL_PREFIX=${ASCENT_INSTALL} ../src
+cmake -C ../host-configs/summit.cmake -DCMAKE_C_COMPILER=/sw/summit/gcc/5.4.0/bin/gcc -DCMAKE_CXX_COMPILER=/sw/summit/gcc/5.4.0/bin/g++ -DCMAKE_BUILD_TYPE=Release -DENABLE_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=${ASCENT_INSTALL} ../src
 echo Ascent compile: SUCCESS
 echo Ascent install: BEGIN
 make install -j 50
@@ -224,7 +234,7 @@ echo Ascent install: SUCCESS
 echo Amrex env setup: BEGIN
 git clone --recursive https://github.com/Alpine-DAV/amrex.git ${OPT_PATH}/amrex/src
 pushd ${OPT_PATH}/amrex/src
-git checkout 5681a81
+git checkout 6c95169d36a5dec2406f67830aecb89253593e14
 git submodule init
 git submodule update
 popd
@@ -235,7 +245,7 @@ echo Amrex install: NOT REQUIRED
 echo Nyx env setup: BEGIN
 git clone --recursive https://github.com/Alpine-DAV/nyx.git ${OPT_PATH}/nyx/src
 pushd ${OPT_PATH}/nyx/src
-git checkout cc2555e
+git checkout 359ba38c7e458b21dd16be89ff1d3c206be757be
 git submodule init
 git submodule update
 popd
@@ -252,24 +262,72 @@ make -j 50 ASCENT_HOME=${ASCENT_HOME} AMREX_HOME=${AMREX_HOME}
 echo Nyx compile: SUCCESS
 echo Nyx Ascent JSON input dump: BEGIN
 echo "[
-   {
-    \"action\": \"add_scenes\",
-    \"scenes\":
-    { \"s1\":
+ {
+    \"action\": \"add_pipelines\",
+    \"pipelines\":
+    {
+      \"pipe1\":
       {
-        \"plots\":        {        \"p1\":        {  \"type\": \"volume\", \"field\": \"Density\", \"color_table\": { \"name\": \"Viridis\" }       }      } ,
-        \"renders\":      {        \"r1\":  {   \"type\": \"cinema\",  \"phi\": \"4\", \"theta\": \"4\", \"db_name\": \"Nyx_db_2\", \"annotations\": \"false\"     }   }
+          \"f1\":
+          {
+            \"type\": \"histsampling\",
+            \"params\":
+            {
+              \"field\": \"Density\"
+            }
+          }
       }
     }
   },
 
-   {
-     \"action\": \"execute\"
-   },
+  {
+    \"action\": \"add_scenes\",
+    \"scenes\":
+    { \"s3\":
+      {
+        \"plots\":
+        {
+          \"p1\":
+          {
+            \"type\": \"pseudocolor\",
+            \"pipeline\": \"pipe1\",
+            \"field\": \"valSampled\"
+          }
+        },
 
-   {
-     \"action\": \"reset\"
-   }
+        \"renders\":
+        {
+          \"r1\":
+            {
+              \"type\": \"cinema\",
+              \"phi\": \"4\",
+              \"theta\": \"4\",
+              \"db_name\": \"Nyx_db_sampling\",
+              \"fg_color\": [0.0, 0.0, 0.0],
+              \"bg_color\": [1.0, 1.0, 1.0],
+              \"annotations\": \"false\"
+            }
+        }
+      }
+    }
+  },
+
+  {
+   \"action\": \"execute\"
+  },
+
+  {
+   \"action\": \"reset\"
+  }
 ]" > ascent_actions.json
 echo Nyx Ascent JSON input dump: DONE
+popd
+
+### BEGIN ANALYSIS DEPENDENCIES
+echo Cinema installation: BEGIN
+module load python/3.6.6-anaconda3-5.3.0
+pushd submodules/cinema_lib
+pip install --user .
+popd
+echo Cinema installation: SUCCESS
 
