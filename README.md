@@ -1,14 +1,5 @@
 ## End-to-end (Nxy/ASCENT/Cinema) Workflow
 
-<table align="center">
-  <tr>
-    <td align="center"><img width="500" src="img/capture.png"></td>
-  </tr>
-  <tr>
-    <td>   Screen capture of Cinema:Explorer view of final output from this workflow.
-</td>
-  </tr>
-</table>
 
 This is a demonstration of an end-to-end pipeline that performs GPU-enabled distributed environment in situ data analysis and visualization using the ECP ExaSky application Nyx. Using ECP ALPINE in situ infrastructure [ASCENT](https://github.com/Alpine-DAV/ascent), the pipeline accesses the appropriate Nyx simulation data and performs data sub-sampling via ALPINE data-driven sampling algorithm. The adaptive spatial sampling algorithm prioritizes rare data values while selecting sample points. As a result, the important features in the data such as Halos in Nyx simulation are preserved. Finally, a Cinema database is generated in situ using ALPINE ASCENT containing data artifacts as renderings of the output sub-sampled data.
 
@@ -17,6 +8,15 @@ The output Cinema database is further processed in a post-processing phase. It t
 The **task** for this workflow is to perform **a visual query**, and **quickly view and explore the results of the simulation, filtered by some computed values**. In this case, we use the `cinema` command line tool to compute the entropy and unique pixels of an image, and then view results constrained by ranges of the computed quantities. This can show us which images may be of interest, from the thousands of images that may be written into a Cinema database. 
 
 This example can be easily adjusted to compute different quantities, and filter on different values, so it serves as a general example of a workflow that performs a visual query on a Cinema database.
+
+<table align="center">
+  <tr>
+  <td align="center"><img width="500" src="img/capture.png"></td>
+  </tr>
+  <tr>
+  <td>Screen capture of Cinema:Explorer view of final output from this workflow.</td>
+  </tr>
+</table>
 
 # Cloning this Git repository.
 
