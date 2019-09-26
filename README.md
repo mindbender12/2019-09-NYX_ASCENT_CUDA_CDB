@@ -1,5 +1,7 @@
 ## End-to-end (Nxy/ASCENT/Cinema) Workflow
 
+![Screen capture](img/capture.png)
+
 This is a demonstration of an end-to-end pipeline that performs GPU-enabled distributed environment in situ data analysis and visualization using the ECP ExaSky application Nyx. Using ECP ALPINE in situ infrastructure [ASCENT](https://github.com/Alpine-DAV/ascent), the pipeline accesses the appropriate Nyx simulation data and performs data sub-sampling via ALPINE data-driven sampling algorithm. The adaptive spatial sampling algorithm prioritizes rare data values while selecting sample points. As a result, the important features in the data such as Halos in Nyx simulation are preserved. Finally, a Cinema database is generated in situ using ALPINE ASCENT containing data artifacts as renderings of the output sub-sampled data.
 
 The output Cinema database is further processed in a post-processing phase. It takes as input a Cinema database produced by ASCENT as described above, computes several values on the images, and installs a Cinema viewer that includes a query on several variables.
