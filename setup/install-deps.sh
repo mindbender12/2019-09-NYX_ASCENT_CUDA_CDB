@@ -11,7 +11,9 @@ if [[ $(hostname -f | grep summit) == "" ]]; then echo "Pipeline fail: Must run 
 set -e
 
 source ./env.sh
-
+# Start with fresh compile
+echo Removing previous installations...
+rm -rf $BASE_PATH $DATA 
 # Load modules available on summit. 8/14/2019
 modules=( hsi/5.0.2.p5
           lsf-tools/2.0
