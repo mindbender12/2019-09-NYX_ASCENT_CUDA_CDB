@@ -13,7 +13,7 @@ set -e
 source ./env.sh
 # Start with fresh compile
 echo Removing previous installations...
-rm -rf $BASE_PATH $DATA 
+rm -rf $BASE_PATH/opt $DATA 
 # Load modules available on summit. 8/14/2019
 modules=( hsi/5.0.2.p5
           lsf-tools/2.0
