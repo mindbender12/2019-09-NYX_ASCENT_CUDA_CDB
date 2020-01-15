@@ -244,25 +244,25 @@ echo Amrex env setup: NOT REQUIRED
 echo Amrex compile: NOT REQUIRED
 echo Amrex install: NOT REQUIRED
 
-echo Nyx env setup: BEGIN
-git clone --recursive https://github.com/Alpine-DAV/nyx.git ${OPT_PATH}/nyx/src
-pushd ${OPT_PATH}/nyx/src
+echo Nyx sampling env setup: BEGIN
+git clone --recursive https://github.com/Alpine-DAV/nyx.git ${OPT_PATH}/nyx/src_sampling
+pushd ${OPT_PATH}/nyx/src_sampling
 git checkout 359ba38c7e458b21dd16be89ff1d3c206be757be
 git submodule init
 git submodule update
 popd
 # nyx paths
 #Nyx build process doesn't allow me to follow the build dir paradigm
-NYX_BUILD=${OPT_PATH}/nyx/src/Exec/LyA
+NYX_SAMPLING_BUILD=${OPT_PATH}/nyx/src_sampling/Exec/LyA
 AMREX_HOME=${OPT_PATH}/amrex/src
 ASCENT_HOME=${ASCENT_INSTALL}
-echo Nyx env setup: SUCCESS
-echo Nyx compile: BEGIN
-pushd ${NYX_BUILD}
+echo Nyx sampling env setup: SUCCESS
+echo Nyx sampling compile: BEGIN
+pushd ${NYX_SAMPLING_BUILD}
 cat GNUmakefile | sed 's/USE_MPI = FALSE/USE_MPI = TRUE/' | sed 's/USE_OMP = FALSE/USE_OMP = TRUE/' >./tmp; cat ./tmp >GNUmakefile; rm ./tmp;
 make -j 50 ASCENT_HOME=${ASCENT_HOME} AMREX_HOME=${AMREX_HOME}
-echo Nyx compile: SUCCESS
-echo Nyx Ascent JSON input dump: BEGIN
+echo Nyx sampling compile: SUCCESS
+echo Nyx sampling Ascent JSON input dump: BEGIN
 echo "[
  {
     \"action\": \"add_pipelines\",
@@ -322,7 +322,89 @@ echo "[
    \"action\": \"reset\"
   }
 ]" > ascent_actions.json
-echo Nyx Ascent JSON input dump: DONE
+echo Nyx sampling Ascent JSON input dump: DONE
+popd
+
+echo Nyx isocontours env setup: BEGIN
+git clone --recursive https://github.com/Alpine-DAV/nyx.git ${OPT_PATH}/nyx/src_isocontours
+pushd ${OPT_PATH}/nyx/src_isocontours
+git checkout 359ba38c7e458b21dd16be89ff1d3c206be757be
+git submodule init
+git submodule update
+popd
+# nyx paths
+#Nyx build process doesn't allow me to follow the build dir paradigm
+NYX_ISOCONTOURS_BUILD=${OPT_PATH}/nyx/src_isocontours/Exec/LyA
+AMREX_HOME=${OPT_PATH}/amrex/src
+ASCENT_HOME=${ASCENT_INSTALL}
+echo Nyx isocontours env setup: SUCCESS
+echo Nyx isocontours compile: BEGIN
+pushd ${NYX_ISOCONTOURS_BUILD}
+cat GNUmakefile | sed 's/USE_MPI = FALSE/USE_MPI = TRUE/' | sed 's/USE_OMP = FALSE/USE_OMP = TRUE/' >./tmp; cat ./tmp >GNUmakefile; rm ./tmp;
+make -j 50 ASCENT_HOME=${ASCENT_HOME} AMREX_HOME=${AMREX_HOME}
+echo Nyx isocontours compile: SUCCESS
+echo Nyx isocontours Ascent JSON input dump: BEGIN
+"[
+ {
+    \"action\": \"add_pipelines\",
+    \"pipelines\":
+    {
+      \"pipe2\":
+      {
+          \"f2\":
+          {
+            \"type\": \"contour\",
+            \"params\":
+            {
+              \"field\": \"Density\",
+              \"levels\": 1100000000.0
+            }
+          }
+      }
+    }
+  },
+
+  {
+    \"action\": \"add_scenes\",
+    \"scenes\":
+    { \"s4\":
+      {
+        \"plots\":
+        {
+          \"p5\":
+          {
+            \"type\": \"pseudocolor\",
+            \"pipeline\": \"pipe2\",
+            \"field\": \"Density\"
+          }
+        },
+
+        \"renders\":
+        {
+          \"r5\":
+            {
+              \"type\": \"cinema\",
+              \"phi\": \"4\",
+              \"theta\": \"4\",
+              \"db_name\": \"Nyx_db_contour\",
+              \"fg_color\": [0.0, 0.0, 0.0],
+              \"bg_color\": [1.0, 1.0, 1.0],
+              \"annotations\": \"true\"
+            }
+        }
+      }
+    }
+  },
+
+  {
+   \"action\": \"execute\"
+  },
+
+  {
+   \"action\": \"reset\"
+  }
+]" > ascent_actions.json
+echo Nyx isocontours Ascent JSON input dump: DONE
 popd
 
 ### BEGIN ANALYSIS DEPENDENCIES
