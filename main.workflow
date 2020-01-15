@@ -23,5 +23,5 @@ action "check job completion" {
 action "validate" {
   needs = "check job completion"
   uses = "sh"
-  args = "./sbang.sh validate/build_and_export_cinema_viewer.sh"
+  args = "./sbang.sh validate/package_cinema_databases.sh"
 }
