@@ -3,7 +3,7 @@
 #BSUB -J nyx_in_situ
 #BSUB -nnodes 8
 #BSUB -P CSC340
-#BSUB -W 00:07
+#BSUB -W 01:00
 
 module load gcc/5.4.0
 module load spectrum-mpi

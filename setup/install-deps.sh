@@ -344,7 +344,7 @@ cat GNUmakefile | sed 's/USE_MPI = FALSE/USE_MPI = TRUE/' | sed 's/USE_OMP = FAL
 make -j 50 ASCENT_HOME=${ASCENT_HOME} AMREX_HOME=${AMREX_HOME}
 echo Nyx isocontours compile: SUCCESS
 echo Nyx isocontours Ascent JSON input dump: BEGIN
-"[
+echo "[
  {
     \"action\": \"add_pipelines\",
     \"pipelines\":
