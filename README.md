@@ -10,6 +10,7 @@ The **task** for this workflow is to perform **a visual query**, and **quickly v
 This example can be easily adjusted to compute different quantities, and filter on different values, so it serves as a general example of a workflow that performs a visual query on a Cinema database.
 
 This workflow exercises specific branches of:
+
 -Nyx (Code)
 -AMReX (Code)
 -Ascent (Version)
