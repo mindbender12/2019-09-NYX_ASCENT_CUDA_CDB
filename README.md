@@ -11,12 +11,12 @@ This example can be easily adjusted to compute different quantities, and filter 
 
 This workflow exercises specific branches of:
 
--Nyx (Code)
--AMReX (Code)
--Ascent (Version)
--Conduit (Version)
--VTK-m (Code)
--VTK-h (Code)
+- Nyx (Code)
+- AMReX (Code)
+- Ascent (Version)
+- Conduit (Version)
+- VTK-m (Code)
+- VTK-h (Code)
 
 <table align="center">
   <tr>
