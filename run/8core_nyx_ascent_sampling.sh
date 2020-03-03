@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#BSUB -J nyx_in_situ
+#BSUB -J nyx_in_situ_sampling
 #BSUB -nnodes 8
 #BSUB -P CSC340
 #BSUB -W 00:07
