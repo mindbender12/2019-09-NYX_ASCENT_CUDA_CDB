@@ -1,13 +1,7 @@
 ## End-to-end (Nxy/ASCENT/Cinema) Workflow
 
 <p align="center">
-<table>
-  <tr><td>
     <img src="img/diagram.png"/>
-  </td></tr>
-  <tr><td>Diagram of the workflow for this example.
-  </td></tr>
-</table>
 </p>
 
 
