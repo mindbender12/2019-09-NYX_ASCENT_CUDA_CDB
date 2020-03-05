@@ -357,7 +357,7 @@ echo "[
             \"params\":
             {
               \"field\": \"Density\",
-              \"levels\": 1100000000.0
+              \"iso_values\": 1100000000.0
             }
           }
       }
