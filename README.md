@@ -20,7 +20,7 @@ This example can be easily adjusted to compute different quantities, and filter 
   <td align="center"><img width="500" src="img/capture.png"></td>
   </tr>
   <tr>
-  <td>Screen capture of Cinema:Explorer view of final output from this workflow.</td>
+  <td>Screen capture of Cinema:Explorer view of final output from sampling for this workflow.</td>
   </tr>
 </table>
 </p>
