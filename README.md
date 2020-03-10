@@ -1,7 +1,7 @@
 ## End-to-end (Nxy/ASCENT/Cinema) Workflow
 
 <p align="center">
-    <img height="350" src="img/pantheon_pipeline_2.png"/>
+    <img height="275" src="img/pantheon_pipeline_2.png"/>
 </p>
 <p align="center">Diagram of the workflow in this example.</p>
 
